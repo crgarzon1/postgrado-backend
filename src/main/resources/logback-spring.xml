@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include
+		resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+	<springProfile name="dev">
+		<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+		<root level="debug">
+			<appender-ref ref="CONSOLE"/>
+		</root>
+	</springProfile>
+
+	<springProfile name="preprod">
+		<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+		<logger name="org.springframework" level="INFO">
+			<appender-ref ref="CONSOLE"/>
+		</logger>
+		<logger name="co.edu.lasalle" level="DEBUG" >
+			<appender-ref ref="CONSOLE"/>
+		</logger>
+		<logger name="co.edu.unisalle" level="INFO" >
+			<appender-ref ref="CONSOLE"/>
+		</logger>
+	</springProfile>
+
+	<springProfile name="prod">
+		<appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${user.home}/logs/postgrado-backend.log</file>
+			<rollingPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+				<fileNamePattern>${user.home}/logs/archived/postgrado-backend.%d{yyyy-MM-dd}.%i.log
+				</fileNamePattern>
+				<maxFileSize>10MB</maxFileSize>
+				<totalSizeCap>20GB</totalSizeCap>
+				<maxHistory>60</maxHistory>
+			</rollingPolicy>
+
+			<encoder>
+				<pattern>%d %p %c{1.} [%t] %m%n</pattern>
+			</encoder>
+		</appender>
+		<logger name="org.springframework" level="INFO" />
+		<logger name="co.edu.lasalle" level="INFO" />
+		<root level="INFO">
+			<appender-ref ref="FILE-ROLLING" />
+		</root>
+	</springProfile>
+
+</configuration>
